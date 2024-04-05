@@ -41,7 +41,7 @@ $ uvicorn main:app --reload
 ## API Reference
 The API documentation is available at http://127.0.0.1:8000/docs. It provides a detailed overview of the available endpoints, parameters, and responses.
 
-![TestTask API](https://downloader.disk.yandex.ru/preview/f9bfdeca4bc79ecb853ccb3fc72076a43cf2deb6d3df6176cad7152e9bae9970/66100b3f/F04DbafL6HTO01lBNrIZAaq6me-YM9gTgbDF8Xp4pvv7zhwn-CRWI5DalutpyM1UwyAhvAWdMHxGQCd5jzN9zA%3D%3D?uid=0&filename=greenatom_testtask_doc.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048)
+![TestTask API](https://downloader.disk.yandex.ru/preview/51b79d858b2a11bfbff04267cf1a6052ac1d6ea8881d8bce61980655d6ef620b/6610588b/Tn8cqT6OKWjUfW7Yoi0PhkTb_GbGRX8cFujzmy4MxO7gOtTV9glMpTNWd0KUyYncPV2Nn7Xu7q88JrHhfuGkLg%3D%3D?uid=0&filename=greenatom_testtask_doc.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048)
 
 ## Usage Examples
 
