@@ -1,10 +1,17 @@
 import asyncio
 import os
+import sys
 import signal
+import psutil
+import datetime
 import subprocess
 import json
 
 from fastapi import HTTPException, Response
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+
+from db import services
 
 class RobotManager:
     """
@@ -23,7 +30,6 @@ class RobotManager:
     ```
     """
     def __init__(self):
-        self.instances_robots = {}
         self.project_root = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), '..')
         self.lock = asyncio.Lock()
@@ -31,7 +37,7 @@ class RobotManager:
     async def start(self, start_number: int = 0):
         """Starts a new robot instance.
 
-            :param start_number:The initial number that the robot
+            :param start_number: The initial number that the robot
                 will display in the console. Defaults to 0.
             :return: A Response object containing a JSON message
                 with the PID of the started robot(s).
@@ -48,12 +54,6 @@ class RobotManager:
                     creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
                 )
 
-                process = self.instances_robots.get(instance_bot.pid, None)
-
-                if process:
-                    process.send_signal(signal.CTRL_BREAK_EVENT)
-
-                self.instances_robots[str(instance_bot.pid)] = instance_bot
 
                 message =  f'Robot started successfully. Its PID: ' \
                            f'{instance_bot.pid}'
@@ -80,51 +80,63 @@ class RobotManager:
                 stopping the process(es).
         """
         async with self.lock:
-            if not len(self.instances_robots.items()):
-                raise HTTPException(status_code=400,
-                                    detail=f'No robots are currently working!')
-
             if not pid:
-                for pid, process in list(self.instances_robots.items()):
-                    try:
-                        del self.instances_robots[pid]
-                        process.send_signal(signal.CTRL_BREAK_EVENT)
-                    except Exception as e:
-                        print(e)
+                processes = await services.get_processes()
+                for proc in processes:
+                    await self._stop_process(proc.get('pid'),
+                                             proc.get('start_date'))
+                    await asyncio.sleep(0.03)
+                message = 'All robots have been stopped!'
+            else:
+                p = psutil.Process(pid=pid)
+                if p:
+                    tz = datetime.timezone.utc
+                    sql_datetime = datetime.datetime.fromtimestamp(
+                        p.create_time(), tz=tz)
+                    prc = await services.get_process(sql_datetime, pid)
+                    if prc:
+                        await self._stop_process(pid, prc.get('start_date'))
+                        message = f'Robot stoped. Its PID: {pid}'
+                    else:
                         raise HTTPException(
                             status_code=400,
-                            detail=f'Failed to stop processes '
-                                   f'{process.pid}. '
-                                   f'Internal Server Error.')
+                            detail=f'The robot with the passed PID: {pid} '
+                                   f'is not among the running ones'
+                        )
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail={
+                            'message': f'Process with PID {pid} not found.'}
+                    )
 
-                message = 'All robots have been stopped!'
-                return Response(
-                    content=json.dumps({'message': message}),
-                    media_type="application/json", status_code=200)
+            return Response(
+                content=json.dumps({'message': message}),
+                media_type="application/json",
+                status_code=200
+            )
 
-            process = self.instances_robots.get(str(pid), None)
+    async def _stop_process(self, pid: int, start_date: str):
+        """Stops the robot process by PID and start date.
 
-            if process:
-                try:
-                    del self.instances_robots[str(pid)]
-                    process.send_signal(signal.CTRL_BREAK_EVENT)
+        :param pid: Process ID
+        :param start_date: Process start date
+        """
+        try:
+            pr = psutil.Process(pid=pid)
+        except psutil.NoSuchProcess:
+            return
 
-                    return Response(
-                        content=json.dumps(
-                            {'message': f'Robot stoped. Its PID: {pid}'}),
-                        media_type="application/json", status_code=200)
+        tz = datetime.timezone.utc
+        sql_datetime = datetime.datetime.fromtimestamp(pr.create_time(), tz=tz)
 
-                except ProcessLookupError:
-                    return HTTPException(status_code=400, detail={
-                        'message': f'Process with PID {pid} not found.'})
-
-                except Exception as e:
-                    raise HTTPException(status_code=400,
-                                        detail=f'Failed to stop processes '
-                                               f'{process.pid}. '
-                                               f'Internal Server Error.')
-            else:
-                raise HTTPException(status_code=400,
-                                    detail=f'The robot with the passed '
-                                           f'PID: {pid} is not among '
-                                           f'the running ones')
+        if start_date == sql_datetime.replace(tzinfo=None):
+            try:
+                os.kill(pid, signal.CTRL_BREAK_EVENT)
+            except psutil.NoSuchProcess:
+                pass
+            except Exception:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f'Failed to stop processes {pid}. '
+                           f'Internal Server Error.')

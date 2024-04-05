@@ -103,6 +103,7 @@ async def stats(offset: int = 0, limit: int = 20, order_by: str = 'asc'):
         The structure of each robot run dictionary is as follows:
             * **id (int):** Robot run ID.
             * **start_date (datetime):** Date and time of the robot run start.
+            * **pid (int):** Process id of the robot run.
             * **duration (float):** Duration of the robot run.
             * **start_number (int):** Robot run number.
         ## Example

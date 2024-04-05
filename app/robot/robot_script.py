@@ -1,6 +1,8 @@
 import asyncio
 import argparse
+import datetime
 import signal
+import psutil
 import time
 import sys
 import os
@@ -72,9 +74,17 @@ async def main():
     and waits for their completion.
     """
     try:
+        p = psutil.Process()
+
+        tz = datetime.timezone.utc
+        sql_datetime = datetime.datetime.fromtimestamp(p.create_time(),
+                                                       tz=tz)
+        start_time_str = sql_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        print(f'Был запущен робот в {start_time_str} с PID: {p.pid}')
+
         global robot_id
         await services.create_database()
-        robot_id = await services.set_robot(int(args.count))
+        robot_id = await services.set_robot(sql_datetime, int(args.count), p.pid)
         update_task = asyncio.create_task(process_update_queue())
         print_task = asyncio.create_task(print_number(int(args.count)))
 
@@ -82,6 +92,8 @@ async def main():
                            return_when=asyncio.FIRST_COMPLETED)
     except ValueError:
         print('Error: --count argument must be a number.')
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        return None
 
 signal.signal(signal.SIGBREAK, handler=handle_sigbreak)
 signal.signal(signal.SIGINT, handler=handle_sigbreak)

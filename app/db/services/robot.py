@@ -21,15 +21,18 @@ from models import Robot
 @connection_and_session
 async def set_robot(connection: AsyncConnection,
                     session: AsyncSession,
-                    start_number: int):
+                    start_date: DateTime,
+                    start_number: int,
+                    pid: int):
     """Creates a new robot entry in the database.
 
     :param connection: The asynchronous database connection.
     :param session: The asynchronous database session.
     :param start_number: The starting number for the robot.
+    :param: pid: The process id for the robot.
     :return: The ID of the newly created robot entry.
     """
-    new_robot = Robot(start_number)
+    new_robot = Robot(start_date, start_number, pid)
     session.add(new_robot)
     await session.commit()
 
@@ -76,6 +79,7 @@ async def get_stats(connection: AsyncConnection,
             Each dictionary contains the following keys:
             * 'id': Robot run ID.
             * 'start_date': Date and time of the robot run start.
+            * 'pid': Process id of the robot run.
             * 'duration': Duration of the robot run.
             * 'start_number': Robot run number.
     """
@@ -83,7 +87,8 @@ async def get_stats(connection: AsyncConnection,
         Robot.start_date)
 
     robot_runs = await session.execute(
-        select(Robot.id, Robot.start_date, Robot.duration, Robot.start_number)
+        select(Robot.id, Robot.start_date, Robot.pid, Robot.duration,
+               Robot.start_number)
         .order_by(sort_field).offset(offset)
         .limit(limit))
 
@@ -96,9 +101,54 @@ async def get_stats(connection: AsyncConnection,
             {
                 'id': row.id,
                 'start_date': row.start_date,
+                'pid': row.pid,
                 'duration': row.duration,
                 'start_number': row.start_number
             }
         )
 
     return robot_stats
+
+@connection_and_session
+async def get_process(connection: AsyncConnection,
+                      session: AsyncSession,
+                      start_date: DateTime,
+                      pid: int):
+    try:
+        process = await session.execute(select(Robot.id, Robot.pid, Robot.start_date)
+        .where(
+            and_(Robot.pid == pid, Robot.start_date == start_date,
+                 Robot.duration == None)))
+
+        process = process.fetchone()
+
+        if process:
+            return {
+                'id': process.id,
+                'pid': process.pid,
+                'start_date': process.start_date
+            }
+
+    except SQLAlchemyError as e:
+        print(f'SQLAlchemy Error: {e}')
+
+@connection_and_session
+async def get_processes(connection: AsyncConnection,
+                        session: AsyncSession):
+    process = await session.execute(select(Robot.id, Robot.pid, Robot.start_date)
+    .where(
+        and_(Robot.duration == None)))
+
+    processes = process.fetchall()
+    unfinished_processes = []
+
+    if processes:
+        for row in processes:
+            unfinished_processes.append(
+                {
+                    'id': row.id,
+                    'pid': row.pid,
+                    'start_date': row.start_date
+                }
+            )
+        return unfinished_processes
