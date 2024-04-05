@@ -1,6 +1,7 @@
 import asyncio
 import argparse
 import datetime
+import logging
 import signal
 import psutil
 import time
@@ -26,7 +27,14 @@ update_queue = asyncio.Queue()
 terminate_flag = False
 
 robot_id = 0
-start_time = 0
+
+p = psutil.Process()
+
+start_time = p.create_time()
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def handle_sigbreak(signum, frame):
     """Handles SIGBREAK and SIGINT signals to gracefully terminate the counter.
@@ -41,14 +49,14 @@ def handle_sigbreak(signum, frame):
 
     update_queue.put_nowait(services.update_robot(robot_id, duration))
 
+    logger.info(f'The robot has been stopped. Duration of work: {duration} '
+                f'seconds. Its PID is {p.pid}')
+
 async def print_number(start_number: int):
     """Prints numbers to the console every second, starting from the given initial value.
 
     :param start_number: The initial value for the counter.
     """
-    global start_time
-    start_time = time.time()
-
     while not terminate_flag:
         print(start_number)
         start_number += 1
@@ -74,13 +82,11 @@ async def main():
     and waits for their completion.
     """
     try:
-        p = psutil.Process()
-
         tz = datetime.timezone.utc
-        sql_datetime = datetime.datetime.fromtimestamp(p.create_time(),
+        sql_datetime = datetime.datetime.fromtimestamp(start_time,
                                                        tz=tz)
-        start_time_str = sql_datetime.strftime("%Y-%m-%d %H:%M:%S")
-        print(f'Был запущен робот в {start_time_str} с PID: {p.pid}')
+        start_time_str = sql_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        logger.info(f'The robot was launched with PID: {p.pid}')
 
         global robot_id
         await services.create_database()
@@ -91,9 +97,9 @@ async def main():
         await asyncio.wait([update_task, print_task],
                            return_when=asyncio.FIRST_COMPLETED)
     except ValueError:
-        print('Error: --count argument must be a number.')
+        logger.error('Error: --count argument must be a number.')
     except (psutil.NoSuchProcess, psutil.AccessDenied):
-        return None
+        logger.error('An error occurred with the process')
 
 signal.signal(signal.SIGBREAK, handler=handle_sigbreak)
 signal.signal(signal.SIGINT, handler=handle_sigbreak)

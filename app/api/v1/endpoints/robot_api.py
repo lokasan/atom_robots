@@ -1,25 +1,28 @@
 import sys
 import os
 
-from fastapi import FastAPI
+from fastapi import APIRouter
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              '..', '..', '..'))
 
+if __package__ is None or __package__ == "":
+    from consts import TAGS_METADATA, ROBOT_MANAGEMENT, ROBOT_STATISTICS
+else:
+    from .consts import TAGS_METADATA, ROBOT_MANAGEMENT, ROBOT_STATISTICS
 from controllers import RobotManager
 from db import services
-from consts import TAGS_METADATA, ROBOT_MANAGEMENT, ROBOT_STATISTICS
 
-app = FastAPI(title='GreenAtom Robots API', openapi_tags=TAGS_METADATA)
+router = APIRouter()
 
 robot = RobotManager()
 
-@app.on_event('startup')
+@router.on_event('startup')
 async def startup_event():
     "Create database on SQlite"
     await services.create_database()
 
-@app.post('/start', tags=[ROBOT_MANAGEMENT])
+@router.post('/start', tags=[ROBOT_MANAGEMENT])
 async def start(start_number: int = 0):
     """Starts a new robot instance with the specified start number.
 
@@ -46,7 +49,7 @@ async def start(start_number: int = 0):
     """
     return await robot.start(start_number)
 
-@app.post('/stop', tags=[ROBOT_MANAGEMENT])
+@router.post('/stop', tags=[ROBOT_MANAGEMENT])
 async def stop(pid: int = 0):
     """Stops a running robot instance.
 
@@ -91,7 +94,7 @@ async def stop(pid: int = 0):
     return await robot.stop(pid)
 
 
-@app.get('/stats', tags=[ROBOT_STATISTICS])
+@router.get('/stats', tags=[ROBOT_STATISTICS])
 async def stats(offset: int = 0, limit: int = 20, order_by: str = 'asc'):
     """Retrieves robot run statistics with pagination and sorting.
 

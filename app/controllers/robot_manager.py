@@ -96,7 +96,7 @@ class RobotManager:
                     prc = await services.get_process(sql_datetime, pid)
                     if prc:
                         await self._stop_process(pid, prc.get('start_date'))
-                        message = f'Robot stoped. Its PID: {pid}'
+                        message = f'Robot stopped. Its PID: {pid}'
                     else:
                         raise HTTPException(
                             status_code=400,

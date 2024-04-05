@@ -35,9 +35,9 @@ async def create_database():
         try:
             async with engine.begin() as connection:
                 await connection.run_sync(Base.metadata.create_all)
-                logger.info("Database created successfully.")
+                logger.info('Database created successfully.')
         except Exception as e:
-            logger.error(f"Error creating database: {e}")
+            logger.error(f'Error creating database: {e}')
 
 if __name__ == '__main__':
     asyncio.run(create_database())
