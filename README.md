@@ -1,4 +1,4 @@
-# [GreenAtom Robots API (Test Task)](https://github.com/lokasan/atom_robots) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)]()
+# [GreenAtom Robots API (Test Task)](https://github.com/lokasan/atom_robots) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lokasan/atom_robots/blob/master/LICENSE)
 
 ## Description
 
@@ -84,7 +84,7 @@ curl http://127.0.0.1:8000/stats
 ```
 | Statistics for all robots                                                                                                                                                                                                                                                                                                                                                 |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Statistics](https://downloader.disk.yandex.ru/preview/537d70856ac0704c58727c2fc9775864061fbd88a314ff598a56e62f4dec6265/661050a4/wUcBXhTZiOr3hg8TBmCGVwAFvZnkOy6T-TBRz6XYy4zXjAoOAtEpA4ruHXstCQ68fBS1we4Z_FP5FZlE4LDSKw%3D%3D?uid=0&filename=all_stats.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
+| ![Statistics](https://downloader.disk.yandex.ru/preview/866972061231938784be1fd80f1810d141660363a0fe3600473893117b6ea6af/661157c7/wUcBXhTZiOr3hg8TBmCGVwAFvZnkOy6T-TBRz6XYy4zXjAoOAtEpA4ruHXstCQ68fBS1we4Z_FP5FZlE4LDSKw%3D%3D?uid=0&filename=all_stats.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
 * You can use multiple parameters in a query to display process information: 
   * **offset** - is responsible for how many records need to be skipped
   * **limit** - is responsible for how many records to display
@@ -115,7 +115,7 @@ $ python robot_script.py -c 50
 ```
 | Starting the robot with initial number                                                                                                                                                                                                                                                                                                                                                             |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Robot from Console with initial number](https://downloader.disk.yandex.ru/preview/88bb0d65840eb9218100beebce3b9124039de6f41f35bd031a336a958989a7b5/66105514/q0815BD9jXCiYtXFXv5QCT6nuzgPWShNCxtrbx2bFcdlKLSOSAQoHxXXwTzC8CKOYkGsi-pfcVJ9bnD3Ql0cqQ%3D%3D?uid=0&filename=console_start_initial.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
+| ![Robot from Console with initial number](https://downloader.disk.yandex.ru/preview/7c2c377c4f39e55758739a52f68fb7dafbde60b5867aba3c456bb28cf8bd3ede/66115763/q0815BD9jXCiYtXFXv5QCT6nuzgPWShNCxtrbx2bFcdlKLSOSAQoHxXXwTzC8CKOYkGsi-pfcVJ9bnD3Ql0cqQ%3D%3D?uid=0&filename=console_start_initial.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
 # Additional Notes
 * The project uses a SQLite database (robots.db) to store information about robot runs.
 * The API endpoints are tagged for better organization in the documentation.
