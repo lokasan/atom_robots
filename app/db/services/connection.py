@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 db_file = Path(__file__).resolve().parent.parent / 'robots.db'
 DATABASE_URL = f'sqlite+aiosqlite:///{db_file}'
 
+
 async def create_async_engine_and_session():
     """Creates an asynchronous SQLAlchemy engine and session factory.
 
@@ -27,6 +28,7 @@ async def create_async_engine_and_session():
     async_session = sessionmaker(bind=engine, class_=AsyncSession,
                                  expire_on_commit=False, autoflush=False)
     return engine, async_session
+
 
 def connection_and_session(func):
     """Decorator for managing database connections and sessions for asynchronous functions.

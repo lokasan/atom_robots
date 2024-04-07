@@ -36,6 +36,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
 def handle_sigbreak(signum, frame):
     """Handles SIGBREAK and SIGINT signals to gracefully terminate the counter.
 
@@ -52,6 +53,7 @@ def handle_sigbreak(signum, frame):
     logger.info(f'The robot has been stopped. Duration of work: {duration} '
                 f'seconds. Its PID is {p.pid}')
 
+
 async def print_number(start_number: int):
     """Prints numbers to the console every second, starting from the given initial value.
 
@@ -61,6 +63,7 @@ async def print_number(start_number: int):
         print(start_number)
         start_number += 1
         await asyncio.sleep(1)
+
 
 async def process_update_queue():
     """Processes tasks from the update queue asynchronously.
@@ -72,6 +75,7 @@ async def process_update_queue():
     while True:
         update_task = await update_queue.get()
         await update_task
+
 
 async def main():
     """Parses command-line arguments, sets up the counter, and starts asynchronous tasks.
@@ -100,6 +104,7 @@ async def main():
         logger.error('Error: --count argument must be a number.')
     except (psutil.NoSuchProcess, psutil.AccessDenied):
         logger.error('An error occurred with the process')
+
 
 signal.signal(signal.SIGBREAK, handler=handle_sigbreak)
 signal.signal(signal.SIGINT, handler=handle_sigbreak)

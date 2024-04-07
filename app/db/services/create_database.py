@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
 async def create_database():
     """Creates the database schema if the database file doesn't exist.
 
@@ -38,6 +39,7 @@ async def create_database():
                 logger.info('Database created successfully.')
         except Exception as e:
             logger.error(f'Error creating database: {e}')
+
 
 if __name__ == '__main__':
     asyncio.run(create_database())

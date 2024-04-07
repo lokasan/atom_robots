@@ -17,10 +17,12 @@ router = APIRouter()
 
 robot = RobotManager()
 
+
 @router.on_event('startup')
 async def startup_event():
     "Create database on SQlite"
     await services.create_database()
+
 
 @router.post('/start', tags=[ROBOT_MANAGEMENT])
 async def start(start_number: int = 0):
@@ -48,6 +50,7 @@ async def start(start_number: int = 0):
          ```
     """
     return await robot.start(start_number)
+
 
 @router.post('/stop', tags=[ROBOT_MANAGEMENT])
 async def stop(pid: int = 0):

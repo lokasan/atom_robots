@@ -41,7 +41,7 @@ $ uvicorn main:app --reload
 ## API Reference
 The API documentation is available at http://127.0.0.1:8000/docs. It provides a detailed overview of the available endpoints, parameters, and responses.
 
-![TestTask API](https://downloader.disk.yandex.ru/preview/51b79d858b2a11bfbff04267cf1a6052ac1d6ea8881d8bce61980655d6ef620b/6610588b/Tn8cqT6OKWjUfW7Yoi0PhkTb_GbGRX8cFujzmy4MxO7gOtTV9glMpTNWd0KUyYncPV2Nn7Xu7q88JrHhfuGkLg%3D%3D?uid=0&filename=greenatom_testtask_doc.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048)
+![TestTask API](https://i.ibb.co/MpXgHdQ/greenatom-testtask-doc.jpg)
 
 ## Usage Examples
 
@@ -82,9 +82,9 @@ Get statistics for the first 20 robot runs:
 ```bash
 curl http://127.0.0.1:8000/stats
 ```
-| Statistics for all robots                                                                                                                                                                                                                                                                                                                                                 |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Statistics](https://downloader.disk.yandex.ru/preview/866972061231938784be1fd80f1810d141660363a0fe3600473893117b6ea6af/661157c7/wUcBXhTZiOr3hg8TBmCGVwAFvZnkOy6T-TBRz6XYy4zXjAoOAtEpA4ruHXstCQ68fBS1we4Z_FP5FZlE4LDSKw%3D%3D?uid=0&filename=all_stats.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
+| Statistics for all robots                                                                                                                                                                                                                                                                                                                                                |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ![Statistics](https://i.ibb.co/yPqHYXs/all-stats.jpg)                                                                                                                                                                                                                                                      |
 * You can use multiple parameters in a query to display process information: 
   * **offset** - is responsible for how many records need to be skipped
   * **limit** - is responsible for how many records to display
@@ -106,16 +106,17 @@ $ cd app/robot
 ```bash
 $ python robot_script.py
 ```
-| Starting robot                                                                                                                                                                                                                                                                                                                                          |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Start Robot from console](https://downloader.disk.yandex.ru/preview/1ad12ba80d5dd2bd36e170bab985ee648ff410f932880949e04032b8cfb57b2d/66105456/hY_5cPhDsuLUQO-Ra7FOjqLh9rBwBWciGSODJKeB18QZnrdVq61F52kzKSqqsJny9BOgFTqvBh94tr9usbN5DA%3D%3D?uid=0&filename=console_start.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
+| Starting robot                                                          |
+|-------------------------------------------------------------------------|
+| ![Start Robot from console](https://i.ibb.co/d6C9KGP/console-start.jpg) |
+
 3 - If you want to start counting from a different number, then use the following command
 ```bash
 $ python robot_script.py -c 50
 ```
-| Starting the robot with initial number                                                                                                                                                                                                                                                                                                                                                             |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Robot from Console with initial number](https://downloader.disk.yandex.ru/preview/7c2c377c4f39e55758739a52f68fb7dafbde60b5867aba3c456bb28cf8bd3ede/66115763/q0815BD9jXCiYtXFXv5QCT6nuzgPWShNCxtrbx2bFcdlKLSOSAQoHxXXwTzC8CKOYkGsi-pfcVJ9bnD3Ql0cqQ%3D%3D?uid=0&filename=console_start_initial.JPG&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=0&tknv=v2&size=2048x2048) |
+| Starting the robot with initial number                                                                                                                                                                                                                                                                                                                                                      |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ![Robot from Console with initial number](https://i.ibb.co/hHGcBGY/console-start-initial.jpg)                                                                                                                                                                                                                                                                                            |
 # Additional Notes
 * The project uses a SQLite database (robots.db) to store information about robot runs.
 * The API endpoints are tagged for better organization in the documentation.

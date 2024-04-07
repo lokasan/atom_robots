@@ -18,6 +18,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from .connection import connection_and_session
 from models import Robot
 
+
 @connection_and_session
 async def set_robot(connection: AsyncConnection,
                     session: AsyncSession,
@@ -37,6 +38,7 @@ async def set_robot(connection: AsyncConnection,
     await session.commit()
 
     return new_robot.id
+
 
 @connection_and_session
 async def update_robot(connection: AsyncConnection,
@@ -62,6 +64,7 @@ async def update_robot(connection: AsyncConnection,
         return False
 
     return robot.rowcount > 0
+
 
 @connection_and_session
 async def get_stats(connection: AsyncConnection,
@@ -109,6 +112,7 @@ async def get_stats(connection: AsyncConnection,
 
     return robot_stats
 
+
 @connection_and_session
 async def get_process(connection: AsyncConnection,
                       session: AsyncSession,
@@ -131,6 +135,7 @@ async def get_process(connection: AsyncConnection,
 
     except SQLAlchemyError as e:
         print(f'SQLAlchemy Error: {e}')
+
 
 @connection_and_session
 async def get_processes(connection: AsyncConnection,

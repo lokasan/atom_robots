@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 from db import services
 
+
 class RobotManager:
     """
     This class is responsible for managing the lifecycle of robot processes.
@@ -50,13 +51,13 @@ class RobotManager:
         async with self.lock:
             try:
                 instance_bot = subprocess.Popen(
-                    ['python', robot_script_path, '--count', str(start_number)],
+                    ['python', robot_script_path, '--count',
+                     str(start_number)],
                     creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
                 )
 
-
-                message =  f'Robot started successfully. Its PID: ' \
-                           f'{instance_bot.pid}'
+                message = f'Robot started successfully. Its PID: ' \
+                          f'{instance_bot.pid}'
 
                 return Response(
                     content=json.dumps({'message': message}),
