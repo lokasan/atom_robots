@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import Column, String, Integer, BigInteger, text, DateTime,\
     select, func, and_, desc, Text, update
-from sqlalchemy.orm import declarative_base, sessionmaker, aliased
+from sqlalchemy.orm import declarative_base, sessionmaker, aliased, attributes
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession,\
     AsyncConnection
@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession,\
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 from .connection import connection_and_session
-from models import Robot
+from models import Robot, SRobot
 
 
 @connection_and_session
@@ -69,7 +69,7 @@ async def update_robot(connection: AsyncConnection,
 @connection_and_session
 async def get_stats(connection: AsyncConnection,
                     session: AsyncSession,
-                    offset: int, limit: int, order_by: str) -> List[Robot]:
+                    offset: int, limit: int, order_by: str) -> List[SRobot]:
     """Retrieves robot run statistics with pagination and sorting.
 
     :param connection: Asynchronous database connection.
@@ -90,27 +90,15 @@ async def get_stats(connection: AsyncConnection,
         Robot.start_date)
 
     robot_runs = await session.execute(
-        select(Robot.id, Robot.start_date, Robot.pid, Robot.duration,
-               Robot.start_number)
-        .order_by(sort_field).offset(offset)
-        .limit(limit))
+        select(Robot).order_by(sort_field).offset(offset).limit(limit))
 
-    robot_runs = robot_runs.fetchall()
+    robot_runs = robot_runs.scalars().all()
 
-    robot_stats = []
+    new_robots = [attributes.instance_dict(robot_run) for robot_run in robot_runs]
 
-    for row in robot_runs:
-        robot_stats.append(
-            {
-                'id': row.id,
-                'start_date': row.start_date,
-                'pid': row.pid,
-                'duration': row.duration,
-                'start_number': row.start_number
-            }
-        )
+    schemas_robot = [SRobot.model_validate(robot_run) for robot_run in new_robots]
 
-    return robot_stats
+    return schemas_robot
 
 
 @connection_and_session
@@ -140,11 +128,13 @@ async def get_process(connection: AsyncConnection,
 @connection_and_session
 async def get_processes(connection: AsyncConnection,
                         session: AsyncSession):
-    process = await session.execute(select(Robot.id, Robot.pid, Robot.start_date)
+    process = await session.execute(select(Robot)
     .where(
         and_(Robot.duration == None)))
 
-    processes = process.fetchall()
+    processes = process.scalars().all()
+
+    print(processes)
     unfinished_processes = []
 
     if processes:
@@ -156,4 +146,4 @@ async def get_processes(connection: AsyncConnection,
                     'start_date': row.start_date
                 }
             )
-        return unfinished_processes
+    return unfinished_processes

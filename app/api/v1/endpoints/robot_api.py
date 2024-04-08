@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import List
 
 from fastapi import APIRouter
 
@@ -12,6 +13,7 @@ else:
     from .consts import TAGS_METADATA, ROBOT_MANAGEMENT, ROBOT_STATISTICS
 from controllers import RobotManager
 from db import services
+from db import models
 
 router = APIRouter()
 
@@ -98,7 +100,7 @@ async def stop(pid: int = 0):
 
 
 @router.get('/stats', tags=[ROBOT_STATISTICS])
-async def stats(offset: int = 0, limit: int = 20, order_by: str = 'asc'):
+async def stats(offset: int = 0, limit: int = 20, order_by: str = 'asc') -> List[models.SRobot]:
     """Retrieves robot run statistics with pagination and sorting.
 
         :param offset: Offset from the beginning of the result set.

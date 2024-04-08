@@ -1,5 +1,5 @@
-from .robot import Base, Robot
+from .robot import Base, Robot, SRobot
 
 __all__ = [
-    'Base', 'Robot'
+    'Base', 'Robot', 'SRobot'
 ]

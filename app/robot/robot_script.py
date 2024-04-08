@@ -108,6 +108,7 @@ async def main():
 
 signal.signal(signal.SIGBREAK, handler=handle_sigbreak)
 signal.signal(signal.SIGINT, handler=handle_sigbreak)
+signal.signal(signal.SIGTERM, handler=handle_sigbreak)
 
 if __name__ == '__main__':
     asyncio.run(main())
