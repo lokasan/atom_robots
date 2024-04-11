@@ -65,8 +65,7 @@ class RobotManager:
                     creationflags=subprocess.CREATE_NEW_CONSOLE
                 )
 
-                message = f'Robot started successfully. Its PID: ' \
-                          f'{instance_bot.pid}'
+                message = f'Robot started successfully.'
 
                 return Response(
                     content=json.dumps({'message': message}),
@@ -118,7 +117,10 @@ class RobotManager:
             await self._stop_and_update_robot(prc)
             return f"Robot stopped. PID: {pid}"
         except psutil.NoSuchProcess as e:
-            return str(e)
+            raise HTTPException(
+                status_code=400,
+                detail=f"Robot with PID {e} not found"
+            )
 
     async def _stop_all_robots(self):
         """Stops all running robot processes."""
